@@ -1,0 +1,99 @@
+<p-toast></p-toast>
+
+<div class="p-grid p-jc-center p-shadow-5">
+    <div class="p-col-9">
+        <div class="container">
+            <div class="card">
+                <p-toolbar styleClass="p-mb-4">
+                    <ng-template pTemplate="left">
+                        <a pButton pRipple label="Home" icon="pi pi-home" class="p-button-success p-mr-2" href="http://localhost:4200/"
+                            style="text-decoration: none"></a>
+                        <a pButton pRipple label="Meus animes" icon="pi pi-list" class="p-button-success p-mr-2"
+                            href="http://localhost:4200/animes" style="text-decoration: none"></a>
+                        <a pButton pRipple label="Usuarios cadastrados" icon="pi pi-users" class="p-button-success p-mr-2"
+                            href="http://localhost:4200/users" style="text-decoration: none"></a>
+                        <button pButton pRipple label="Novo" icon="pi pi-plus" class="p-button-success p-mr-2 pa-right" (click)="criarUser()" style="margin-left: 385px;"></button>
+                    </ng-template>
+                </p-toolbar>
+
+                <p-table #dt [value]="users" [rows]="4" [paginator]="true"
+                    [globalFilterFields]="['username','password','role']" [rowHover]="true"
+                    dataKey="id" currentPageReportTemplate="Mostrando {first} de {last} no total de {totalRecords}"
+                    [showCurrentPageReport]="true">
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            <h5 class="p-m-0">Lista de Usuarios</h5>
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                    placeholder="Pesquisar..." />
+                            </span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="username">Username<p-sortIcon field="username"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="password">Password<p-sortIcon field="password"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="role">Cargo<p-sortIcon field="role"></p-sortIcon>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user>
+                        <tr>
+                            <td>{{user.username}}</td>
+                            <td>{{user.password}}</td>
+                            <td>{{user.role}}</td>
+                            <td>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success p-mr-2"
+                                    (click)="editUser(user)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deleteUser(user)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            No total, existem {{users ? users.length : 0 }} usuarios.
+                        </div>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <p-dialog [(visible)]="userDialogo" [style]="{width: '450px'}" header="Detalhes do Usuario" [modal]="true"
+                styleClass="p-fluid" [closable]="false">
+                <ng-template pTemplate="content">
+                    <div class="p-field">
+                        <label for="username">Nome de Usuario</label>
+                        <span _ngcontent-emx-c135="" class="p-input-icon-right">
+                            <input type="text" pInputText id="username" [(ngModel)]="user.username" required autofocus />
+                        </span>
+                        <small class="p-error" *ngIf="submetido && user.username === ''">Nome de Usuario é requirido.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="password">Senha</label>
+                        <input type="text" pInputText id="password" [(ngModel)]="user.password" required autofocus />
+                        <small class="p-error" *ngIf="submetido && user.password === ''">Senha é requirido.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="role">Cargo</label>
+                        <input type="text" pInputText id="role" [(ngModel)]="user.role" required autofocus />
+                        <small class="p-error" *ngIf="submetido && user.role === ''">Cargo é requirido.</small>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="footer">
+                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                        (click)="hideDialog()"></button>
+                    <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text"
+                        (click)="saveUser()"></button>
+                </ng-template>
+            </p-dialog>
+
+            <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+        </div>
+    </div>
+</div>

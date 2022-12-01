@@ -1,0 +1,102 @@
+<p-toast></p-toast>
+
+<div class="p-grid p-jc-center p-shadow-5">
+    <div class="p-col-9">
+        <div class="container">
+            <div class="card">
+                <p-toolbar styleClass="p-mb-4">
+                    <ng-template pTemplate="left">
+                        <a pButton pRipple label="Home" icon="pi pi-home" class="p-button-success p-mr-2" href="http://localhost:4200/"
+                            style="text-decoration: none"></a>
+                        <a pButton pRipple label="Meus animes" icon="pi pi-list" class="p-button-success p-mr-2"
+                            href="http://localhost:4200/animes" style="text-decoration: none"></a>
+                        <a pButton pRipple label="Usuarios cadastrados" icon="pi pi-users" class="p-button-success p-mr-2"
+                            href="http://localhost:4200/users" style="text-decoration: none"></a>
+                    </ng-template>
+                </p-toolbar>
+
+                <p-table #dt [value]="animes" [rows]="4" [paginator]="true"
+                    [globalFilterFields]="['title','status','score']" [rowHover]="true"
+                    dataKey="id" currentPageReportTemplate="Mostrando {first} de {last} no total de {totalRecords}"
+                    [showCurrentPageReport]="true">
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            <h5 class="p-m-0">Lista de Animes</h5>
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                    placeholder="Pesquisar..." />
+                            </span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="title">Titulo <p-sortIcon field="title"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="score">Score<p-sortIcon field="score"></p-sortIcon>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-anime>
+                        <tr>
+                            <td>{{anime.title}}</td>
+                            <td>{{anime.status}}</td>
+                            <td>
+                                <p-rating [ngModel]="anime.score" [readonly]="true" [cancel]="false"></p-rating>
+                            </td>
+                            <td>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success p-mr-2"
+                                    (click)="editAnime(anime)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deleteAnime(anime)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            No total, existem {{animes ? animes.length : 0 }} animes.
+                        </div>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <p-dialog [(visible)]="animeDialogo" [style]="{width: '450px'}" header="Detalhes do Anime" [modal]="true"
+                styleClass="p-fluid" [closable]="false">
+                <ng-template pTemplate="content">
+                    <div class="p-field">
+                        <label for="status">Status</label>
+                        <p-dropdown appendTo="body" [(ngModel)]="anime.status" inputId="status" [options]="status"
+                            required placeholder="Selecione">
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="submetido && anime.status === ''">Status é requirido.</small>
+                    </div>
+
+                    <div class="p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <label for="progresso">Progresso</label>
+                            <p-inputNumber id="progresso" [(ngModel)]="anime.progress" [showButtons]="true" [min]="0" [max]="anime.episodes" value=0>
+                            </p-inputNumber>
+                        </div>
+                        <label for="nota">Nota</label>
+                        <div class="p-field p-col" style="padding-top: 40px;">
+                            <p-rating id="nota" [(ngModel)]="anime.score"></p-rating>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="footer">
+                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                        (click)="hideDialog()"></button>
+                    <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text"
+                        (click)="saveAnime()"></button>
+                </ng-template>
+            </p-dialog>
+
+            <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+        </div>
+    </div>
+</div>
